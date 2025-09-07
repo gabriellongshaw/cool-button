@@ -98,13 +98,13 @@ function updateBox() {
 });
 
 resetBtn.addEventListener("click", () => {
-  boxText.value = "Custom Box";
+  boxText.value = "Cool Button";
   bgColor.value = "#ffffff";
   textColor.value = "#ffffff";
   boxWidth.value = 200;
   borderRadius.value = 8;
   blur.value = 3;
-  transparency.value = 5;
+  transparency.value = 7;
   updateBox();
   syncSliders();
 });
@@ -156,7 +156,7 @@ if (resetIconBtn) {
   resetIconBtn.addEventListener("click", () => {
     if (iconColor) iconColor.value = "#ffffff";
     if (iconBg) iconBg.value = "#ffffff";
-    if (iconTransparency) iconTransparency.value = 5;
+    if (iconTransparency) iconTransparency.value = 7;
     if (iconBlur) iconBlur.value = 3;
     updateIcon();
     syncSliders();
