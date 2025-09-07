@@ -191,9 +191,9 @@ body::before {
 }
 
 .icon-button {
-    position: absolute;
-    bottom: 120px;
-    left: 20px;
+    position: fixed;
+    bottom: clamp(20px, 12.5vh + env(safe-area-inset-bottom), 8px);
+    left: 5vw;
     width: 55px;
     height: 55px;
     display: flex;
@@ -209,12 +209,14 @@ body::before {
     color: white;
     transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
+
 .icon-button svg, 
 .icon-button img {
     width: 28px;
     height: 28px;
     pointer-events: none;
 }
+
 .icon-button:active { 
     cursor: grabbing;
     transform: scale(0.9);
@@ -228,4 +230,61 @@ body::before {
     font-size: 2rem;
     cursor: pointer;
     color: inherit;
+}
+
+@media (min-width: 768px) {
+    .box {
+        width: 220px;
+        padding: 15px 25px;
+    }
+    .controls {
+        top: 220px;
+        left: 60px;
+        width: 280px;
+        padding: 20px;
+    }
+    .icon-button {
+        bottom: clamp(25px, 10vh + env(safe-area-inset-bottom), 100px);
+        left: 4vw;
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .box {
+        width: 250px;
+        padding: 20px 30px;
+    }
+    .controls {
+        top: 250px;
+        left: 70px;
+        width: 300px;
+        padding: 25px;
+    }
+    .icon-button {
+        bottom: clamp(30px, 8vh + env(safe-area-inset-bottom), 120px);
+        left: 3vw;
+        width: 65px;
+        height: 65px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .box {
+        width: 280px;
+        padding: 25px 35px;
+    }
+    .controls {
+        top: 280px;
+        left: 80px;
+        width: 320px;
+        padding: 30px;
+    }
+    .icon-button {
+        bottom: clamp(35px, 6vh + env(safe-area-inset-bottom), 140px);
+        left: 2vw;
+        width: 70px;
+        height: 70px;
+    }
 }
