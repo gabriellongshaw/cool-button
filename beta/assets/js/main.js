@@ -31,8 +31,6 @@ const iconColor = document.getElementById("iconColor");
 const iconBg = document.getElementById("iconBg");
 const iconTransparency = document.getElementById("iconTransparency");
 const iconBlur = document.getElementById("iconBlur");
-const icon = document.getElementById("controlsIcon");
-const iconRadius = document.getElementById("iconRadius");
 const resetIconBtn = document.getElementById("resetIconBtn");
 
 function hexToRgba(hex, alpha = 1) {
@@ -141,15 +139,12 @@ const iconSvg = controlsIcon ? controlsIcon.querySelector("svg") : null;
 
 function updateIcon() {
   if (iconSvg && iconColor) iconSvg.style.color = iconColor.value;
-  if (controlsIcon && iconBg && iconTransparency) {
-    controlsIcon.style.backgroundColor = hexToRgba(iconBg.value, iconTransparency.value / 100);
-  }
+  if (controlsIcon && iconBg && iconTransparency) controlsIcon.style.backgroundColor = hexToRgba(iconBg.value, iconTransparency.value / 100);
   if (controlsIcon && iconBlur) controlsIcon.style.backdropFilter = `blur(${iconBlur.value}px)`;
-  if (controlsIcon && iconRadius) controlsIcon.style.borderRadius = iconRadius.value + "px"; 
 }
 
-if (iconColor && iconBg && iconTransparency && iconBlur && iconRadius) {
-  [iconColor, iconBg, iconTransparency, iconBlur, iconRadius].forEach(input => {
+if (iconColor && iconBg && iconTransparency && iconBlur) {
+  [iconColor, iconBg, iconTransparency, iconBlur].forEach(input => {
     input.addEventListener("input", () => {
       updateIcon();
       updateSliderFill(input);
@@ -163,7 +158,6 @@ if (resetIconBtn) {
     if (iconBg) iconBg.value = "#ffffff";
     if (iconTransparency) iconTransparency.value = 7;
     if (iconBlur) iconBlur.value = 3;
-    if (iconRadius) iconRadius.value = 50;
     updateIcon();
     syncSliders();
   });
@@ -182,55 +176,67 @@ if (controlsIcon && controls) {
   }
 
   function openPanel() {
-  setTransformOriginToIcon();
+    setTransformOriginToIcon();
 
-  controls.style.display = "block"; 
+    controls.style.display = "block";
+    controls.style.transition = "none";
+    controls.style.transform = "scale(0)";
+    controls.style.opacity = "0";
 
-  requestAnimationFrame(() => {
+    controls.getBoundingClientRect();
+
+    requestAnimationFrame(() => {
+      controls.style.transition = "transform 0.35s cubic-bezier(0.25,1,0.5,1), opacity 0.25s ease";
+      controls.style.transform = "scale(1)";
+      controls.style.opacity = "1";
+    });
+
     controls.classList.add("open");
-    controls.style.opacity = "1";
-    controls.style.transform = "scale(1)";
-  });
 
-  controlsIcon.style.transition = "transform 0.35s cubic-bezier(0.25,1,0.5,1), opacity 0.25s ease";
-  controlsIcon.style.transform = "scale(0.7) rotate(45deg)";
-  controlsIcon.style.opacity = "0";
-  controlsIcon.style.pointerEvents = "none";
-}
+    controlsIcon.style.transition = "transform 0.35s cubic-bezier(0.25,1,0.5,1), opacity 0.25s ease";
+    controlsIcon.style.transform = "scale(0.7) rotate(45deg)";
+    controlsIcon.style.opacity = "0";
+    controlsIcon.style.pointerEvents = "none";
+  }
 
-function closePanel() {
-  setTransformOriginToIcon();
+  function closePanel() {
+    setTransformOriginToIcon();
 
-  controls.classList.remove("open");
-  controls.style.opacity = "0";
-  controls.style.transform = "scale(0.4)";
+    controls.style.transition = "transform 0.35s cubic-bezier(0.25,1,0.5,1), opacity 0.25s ease";
+    controls.style.transform = "scale(0)";
+    controls.style.opacity = "0";
 
-  setTimeout(() => {
-    controls.style.display = "none";
-  }, 350);
+    setTimeout(() => {
+      controls.style.display = "none";
+      controls.classList.remove("open");
+    }, 350);
 
-  controlsIcon.style.pointerEvents = "auto";
-  controlsIcon.style.transform = "scale(1) rotate(0deg)";
-  controlsIcon.style.opacity = "1";
-}
+    controlsIcon.style.pointerEvents = "auto";
+    controlsIcon.style.transform = "scale(1) rotate(0deg)";
+    controlsIcon.style.opacity = "1";
+  }
 
   controlsIcon.addEventListener("click", openPanel);
   closeControls.addEventListener("click", closePanel);
 }
 
-function makeDraggable(el) {
+function makeDraggable(el, handle = null) {
   let isDragging = false, offsetX, offsetY;
-  el.addEventListener("mousedown", start);
-  el.addEventListener("touchstart", start, { passive: false });
+
+  const dragTarget = handle || el; // if handle is specified, only drag from it
+
+  dragTarget.addEventListener("mousedown", start);
+  dragTarget.addEventListener("touchstart", start, { passive: false });
 
   function start(e) {
-    if (e.target.tagName === "INPUT") return;
+    if (e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") return; // ignore inputs
     isDragging = true;
     const rect = el.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     offsetX = clientX - rect.left;
     offsetY = clientY - rect.top;
+
     document.addEventListener("mousemove", move);
     document.addEventListener("mouseup", end);
     document.addEventListener("touchmove", move, { passive: false });
@@ -256,9 +262,13 @@ function makeDraggable(el) {
   }
 }
 
+// Use header as drag handle for panel
+const panelHeader = document.querySelector(".controls-header");
+makeDraggable(controls, panelHeader);
+
+// Box and icon remain freely draggable
 makeDraggable(box);
 makeDraggable(controlsIcon);
-makeDraggable(controls);
 
 function switchTab(showEl, ...hideEls) {
   showOnly(showEl, ...hideEls);
@@ -279,6 +289,98 @@ if (tabIconBtn && iconSettings) {
     setActiveTab(tabIconBtn);
     switchTab(iconSettings, boxSettings, panelSettings);
   });
+}
+
+// Box Shadow
+const boxShadowX = document.getElementById("boxShadowX");
+const boxShadowY = document.getElementById("boxShadowY");
+const boxShadowBlur = document.getElementById("boxShadowBlur");
+const boxShadowSpread = document.getElementById("boxShadowSpread");
+const boxShadowColor = document.getElementById("boxShadowColor");
+const boxShadowInset = document.getElementById("boxShadowInset");
+
+function updateBoxShadow() {
+  const inset = boxShadowInset.checked ? "inset" : "";
+  box.style.boxShadow = `${inset} ${boxShadowX.value}px ${boxShadowY.value}px ${boxShadowBlur.value}px ${boxShadowSpread.value}px ${boxShadowColor.value}`;
+}
+
+[boxShadowX, boxShadowY, boxShadowBlur, boxShadowSpread, boxShadowColor, boxShadowInset].forEach(input => {
+  input.addEventListener("input", () => {
+    updateBoxShadow();
+    updateSliderFill(input);
+  });
+});
+
+// Icon Shadow
+const iconShadowX = document.getElementById("iconShadowX");
+const iconShadowY = document.getElementById("iconShadowY");
+const iconShadowBlur = document.getElementById("iconShadowBlur");
+const iconShadowSpread = document.getElementById("iconShadowSpread");
+const iconShadowColor = document.getElementById("iconShadowColor");
+const iconShadowInset = document.getElementById("iconShadowInset");
+
+function updateIconShadow() {
+  const inset = iconShadowInset.checked ? "inset" : "";
+  controlsIcon.style.boxShadow = `${inset} ${iconShadowX.value}px ${iconShadowY.value}px ${iconShadowBlur.value}px ${iconShadowSpread.value}px ${iconShadowColor.value}`;
+}
+
+[iconShadowX, iconShadowY, iconShadowBlur, iconShadowSpread, iconShadowColor, iconShadowInset].forEach(input => {
+  input.addEventListener("input", () => {
+    updateIconShadow();
+    updateSliderFill(input);
+  });
+});
+
+// Optional: Reset shadows when clicking reset buttons
+resetBtn.addEventListener("click", () => {
+  boxShadowX.value = 0;
+  boxShadowY.value = 0;
+  boxShadowBlur.value = 2;
+  boxShadowSpread.value = 0;
+  boxShadowColor.value = "rgba(255, 255, 255, 0.3)";
+  boxShadowInset.checked = true;
+  updateBoxShadow();
+});
+
+resetIconBtn.addEventListener("click", () => {
+  iconShadowX.value = 0;
+  iconShadowY.value = 0;
+  iconShadowBlur.value = 2;
+  iconShadowSpread.value = 0;
+  iconShadowColor.value = "rgba(255, 255, 255, 0.3)";
+  iconShadowInset.checked = true;
+  updateIconShadow();
+});
+
+function showOnly(elToShow, ...others) {
+  // hide all others
+  others.forEach(el => {
+    if (!el) return;
+    // remove visible so it collapses via CSS transitions
+    el.classList.remove("visible");
+    
+    // after the transition ends, ensure it's display:none (prevents keyboard/annoyances)
+    const onEnd = (ev) => {
+      // only respond to the max-height or opacity transition from this element
+      if (ev.target !== el) return;
+      el.style.display = "none";
+      el.removeEventListener("transitionend", onEnd);
+    };
+    // ensure display isn't none before waiting for transitionend
+    el.addEventListener("transitionend", onEnd);
+  });
+  
+  if (!elToShow) return;
+  
+  // prepare the element to be visible
+  elToShow.style.display = "block"; // make it renderable
+  // force a reflow so adding the class triggers the CSS transition
+  // eslint-disable-next-line no-unused-expressions
+  elToShow.offsetHeight;
+  elToShow.classList.add("visible");
+  
+  // reset internal scroll to top when showing a new tab
+  elToShow.scrollTop = 0;
 }
 
 resetBtn.click();
