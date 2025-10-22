@@ -6,10 +6,9 @@
   <title>Cool Button Design</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
+<body class="light">
   <div class="box" id="box">Nothing to see here...</div>
 
-  <!-- Controls Panel -->
   <div class="controls" id="controlsBox">
     <div class="controls-header">
       <h2>Settings</h2>
@@ -17,42 +16,50 @@
     </div>
 
     <div class="tab-buttons">
-      <button id="tabBox" class="active">Button Settings</button>
+      <button id="tabGeneral" class="active">General</button>
+      <button id="tabBox">Button Settings</button>
       <button id="tabControls">Panel Settings</button>
       <button id="tabIcon">Icon Settings</button>
     </div>
-
-    <div class="tab-content box-settings" id="boxSettings">
-      <label>Text <input type="text" class="input-text" id="boxText" value="Custom Box"></label>
-      <label>Background Color <input type="color" class="input-color" id="bgColor" value="#ffffff"></label>
-      <label>Transparency <input type="range" class="input-range" id="transparency" min="0" max="100" value="90"></label>
-      <label>Text Color <input type="color" class="input-color" id="textColor" value="#000000"></label>
-      <label>Width <input type="range" class="input-range" id="boxWidth" min="100" max="400" value="200"></label>
-      <label>Border Radius <input type="range" class="input-range" id="borderRadius" min="0" max="50" value="8"></label>
-      <label>Blur (backdrop) <input type="range" class="input-range" id="blur" min="0" max="10" value="3"></label>
-      <button class="reset-button reset-box" id="resetBtn">Reset Box</button>
-    </div>
-
-    <div class="tab-content panel-settings" id="panelSettings" style="display:none;">
-      <label>Panel Background <input type="color" class="input-color" id="panelBg" value="#222222"></label>
-      <label>Panel Transparency <input type="range" class="input-range" id="panelTransparency" min="0" max="100" value="90"></label>
-      <label>Panel Text Color <input type="color" class="input-color" id="panelText" value="#ffffff"></label>
-      <label>Panel Width <input type="range" class="input-range" id="panelWidth" min="200" max="600" value="300"></label>
-      <label>Panel Border Radius <input type="range" class="input-range" id="panelRadius" min="0" max="50" value="12"></label>
-      <label>Panel Blur <input type="range" class="input-range" id="panelBlur" min="0" max="10" value="0"></label>
-      <button class="reset-button reset-panel" id="resetPanelBtn">Reset Panel</button>
-    </div>
-
-    <div class="tab-content icon-settings" id="iconSettings" style="display:none;">
-      <div class="controls-header">
-        <h2>Icon Settings</h2>
+    
+    <div class="controls-content-wrapper">
+      <div class="tab-content general-settings" id="generalSettings" style="display:block;">
+        <label>Theme</label>
+        <div class="theme-buttons">
+            <button id="lightModeBtn" class="theme-btn active" data-theme="light">Light Mode</button>
+            <button id="darkModeBtn" class="theme-btn" data-theme="dark">Dark Mode</button>
+        </div>
       </div>
-      <label>Icon Color <input type="color" class="input-color" id="iconColor" value="#ffffff"></label>
-      <label>Icon Background <input type="color" class="input-color" id="iconBg" value="#000000"></label>
-      <label>Icon Transparency <input type="range" class="input-range" id="iconTransparency" min="0" max="100" value="90"></label>
-      <label>Icon Blur <input type="range" class="input-range" id="iconBlur" min="0" max="20" value="0"></label>
-      <label>Icon Border Radius <input type="range" class="input-range" id="iconRadius" min="0" max="50" value="12"></label>
-      <button class="reset-button reset-icon" id="resetIconBtn">Reset</button>
+      
+      <div class="tab-content box-settings" id="boxSettings" style="display:none;">
+        <label>Text <input type="text" class="input-text" id="boxText" value="Custom Box"></label>
+        <label>Background Color <input type="color" class="input-color" id="bgColor" value="#ffffff"></label>
+        <label>Transparency <input type="range" class="input-range" id="transparency" min="0" max="100" value="5"></label>
+        <label>Text Color <input type="color" class="input-color" id="textColor" value="#ffffff"></label>
+        <label>Width <input type="range" class="input-range" id="boxWidth" min="100" max="400" value="200"></label>
+        <label>Border Radius <input type="range" class="input-range" id="borderRadius" min="0" max="50" value="8"></label>
+        <label>Blur (backdrop) <input type="range" class="input-range" id="blur" min="0" max="10" value="3"></label>
+        <button class="reset-button reset-box" id="resetBtn">Reset Box</button>
+      </div>
+
+      <div class="tab-content panel-settings" id="panelSettings" style="display:none;">
+        <label>Panel Background <input type="color" class="input-color" id="panelBg" value="#ffffff"></label>
+        <label>Panel Transparency <input type="range" class="input-range" id="panelTransparency" min="0" max="100" value="90"></label>
+        <label>Panel Text Color <input type="color" class="input-color" id="panelText" value="#000000"></label>
+        <label>Panel Width <input type="range" class="input-range" id="panelWidth" min="200" max="600" value="300"></label>
+        <label>Panel Border Radius <input type="range" class="input-range" id="panelRadius" min="0" max="50" value="12"></label>
+        <label>Panel Blur <input type="range" class="input-range" id="panelBlur" min="0" max="10" value="0"></label>
+        <button class="reset-button reset-panel" id="resetPanelBtn">Reset Panel</button>
+      </div>
+
+      <div class="tab-content icon-settings" id="iconSettings" style="display:none;">
+        <label>Icon Color <input type="color" class="input-color" id="iconColor" value="#ffffff"></label>
+        <label>Icon Background <input type="color" class="input-color" id="iconBg" value="#ffffff"></label>
+        <label>Icon Transparency <input type="range" class="input-range" id="iconTransparency" min="0" max="100" value="5"></label>
+        <label>Icon Blur <input type="range" class="input-range" id="iconBlur" min="0" max="20" value="3"></label>
+        <label>Icon Border Radius <input type="range" class="input-range" id="iconRadius" min="0" max="50" value="50"></label>
+        <button class="reset-button reset-icon" id="resetIconBtn">Reset</button>
+      </div>
     </div>
   </div>
 
