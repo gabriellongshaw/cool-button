@@ -42,6 +42,8 @@ const resetIconBtn = document.getElementById("resetIconBtn");
 const lightModeBtn = document.getElementById("lightModeBtn");
 const darkModeBtn = document.getElementById("darkModeBtn");
 
+const resetAllBtn = document.getElementById("resetAllBtn");
+
 function hexToRgb(hex) {
   const r = parseInt(hex.substr(1, 2), 16);
   const g = parseInt(hex.substr(3, 2), 16);
@@ -104,6 +106,12 @@ function applyTheme(theme) {
     textColor.value = '#eeeeee';
     iconBg.value = '#111111';
     iconColor.value = '#ffffff';
+
+    blur.value = 12;
+    iconBlur.value = 12;
+    transparency.value = 50;
+    iconTransparency.value = 50;
+
   } else {
     body.classList.remove('dark');
     lightModeBtn.classList.add('active');
@@ -116,6 +124,11 @@ function applyTheme(theme) {
     textColor.value = '#ffffff';
     iconBg.value = '#ffffff';
     iconColor.value = '#ffffff';
+
+    blur.value = 3;
+    iconBlur.value = 3;
+    transparency.value = 5;
+    iconTransparency.value = 5;
   }
 
   updateBox();
@@ -127,6 +140,22 @@ function applyTheme(theme) {
 if (lightModeBtn && darkModeBtn) {
   lightModeBtn.addEventListener('click', () => applyTheme('light'));
   darkModeBtn.addEventListener('click', () => applyTheme('dark'));
+}
+
+function resetAll() {
+  body.classList.remove('dark');
+  applyTheme('light'); 
+
+  resetBtn.click();
+  resetPanelBtn.click();
+  if (resetIconBtn) resetIconBtn.click();
+
+  lightModeBtn.classList.add('active');
+  darkModeBtn.classList.remove('active');
+}
+
+if (resetAllBtn) {
+    resetAllBtn.addEventListener("click", resetAll);
 }
 
 function updateBox() {
@@ -155,7 +184,7 @@ resetBtn.addEventListener("click", () => {
   textColor.value = "#ffffff";
   boxWidth.value = 200;
   borderRadius.value = 8;
-  blur.value = 3;
+  blur.value = 3; 
   transparency.value = 5; 
   updateBox();
   syncSliders();
@@ -186,7 +215,7 @@ resetPanelBtn.addEventListener("click", () => {
   panelWidth.value = 300;
   panelRadius.value = 12;
   panelBlur.value = 100;
-  panelTransparency.value = 80; 
+  panelTransparency.value = 70; 
   updatePanel();
   syncSliders();
 });
