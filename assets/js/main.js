@@ -2,8 +2,7 @@ const box = document.getElementById("box");
 const controls = document.getElementById("controlsBox");
 const closeControls = document.getElementById("closeControls");
 const controlsIcon = document.getElementById("controlsIcon");
-const body = document.body; 
-
+const body = document.body;
 const boxText = document.getElementById("boxText");
 const bgColor = document.getElementById("bgColor");
 const textColor = document.getElementById("textColor");
@@ -12,7 +11,6 @@ const borderRadius = document.getElementById("borderRadius");
 const blur = document.getElementById("blur");
 const transparency = document.getElementById("transparency");
 const resetBtn = document.getElementById("resetBtn");
-
 const panelBg = document.getElementById("panelBg");
 const panelText = document.getElementById("panelText");
 const panelWidth = document.getElementById("panelWidth");
@@ -20,17 +18,14 @@ const panelRadius = document.getElementById("panelRadius");
 const panelBlur = document.getElementById("panelBlur");
 const panelTransparency = document.getElementById("panelTransparency");
 const resetPanelBtn = document.getElementById("resetPanelBtn");
-
 const tabGeneralBtn = document.getElementById("tabGeneral");
 const tabBoxBtn = document.getElementById("tabBox");
 const tabControlsBtn = document.getElementById("tabControls");
 const tabIconBtn = document.getElementById("tabIcon");
-
 const generalSettings = document.getElementById("generalSettings");
 const boxSettings = document.getElementById("boxSettings");
 const panelSettings = document.getElementById("panelSettings");
 const iconSettings = document.getElementById("iconSettings");
-
 const iconColor = document.getElementById("iconColor");
 const iconBg = document.getElementById("iconBg");
 const iconTransparency = document.getElementById("iconTransparency");
@@ -38,11 +33,11 @@ const iconBlur = document.getElementById("iconBlur");
 const icon = document.getElementById("controlsIcon");
 const iconRadius = document.getElementById("iconRadius");
 const resetIconBtn = document.getElementById("resetIconBtn");
-
 const lightModeBtn = document.getElementById("lightModeBtn");
 const darkModeBtn = document.getElementById("darkModeBtn");
-
 const resetAllBtn = document.getElementById("resetAllBtn");
+
+let currentThemeSource = 'system'; 
 
 function hexToRgb(hex) {
   const r = parseInt(hex.substr(1, 2), 16);
@@ -59,6 +54,7 @@ function updateSliderFill(slider) {
   const percent = ((val - min) / (max - min)) * 100;
   slider.style.setProperty("--value", `${percent}%`);
 }
+
 function syncSliders() {
   sliders.forEach(updateSliderFill);
 }
@@ -94,8 +90,9 @@ function showOnly(elToShow) {
 }
 
 function applyTheme(theme) {
-  if (theme === 'dark') {
-    body.classList.add('dark');
+  const isDark = theme === 'dark';
+  if (isDark) {
+    body.classList.add('dark'); 
     lightModeBtn.classList.remove('active');
     darkModeBtn.classList.add('active');
     panelBg.value = '#222222';
@@ -108,9 +105,9 @@ function applyTheme(theme) {
     iconBlur.value = 12;
     transparency.value = 50;
     iconTransparency.value = 50;
-
   } else {
-    body.classList.remove('dark');
+
+    body.classList.remove('dark'); 
     lightModeBtn.classList.add('active');
     darkModeBtn.classList.remove('active');
     panelBg.value = '#ffffff';
@@ -131,21 +128,64 @@ function applyTheme(theme) {
   syncSliders();
 }
 
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function handleSystemThemeChange(e) {
+  if (currentThemeSource === 'system') {
+    const isSystemDark = prefersDark.matches;
+    const themeToApply = isSystemDark ? 'dark' : 'light';
+
+    applyTheme(themeToApply);
+  }
+}
+
+function initTheme() {
+  const savedThemeSource = localStorage.getItem('themeSource');
+
+  if (savedThemeSource === 'light' || savedThemeSource === 'dark') {
+    currentThemeSource = savedThemeSource;
+
+    applyTheme(savedThemeSource); 
+  } else {
+
+    currentThemeSource = 'system';
+
+    handleSystemThemeChange(); 
+  }
+}
+
+if (prefersDark.addEventListener) {
+  prefersDark.addEventListener('change', handleSystemThemeChange);
+} else if (prefersDark.addListener) { 
+  prefersDark.addListener(handleSystemThemeChange);
+}
+
 if (lightModeBtn && darkModeBtn) {
-  lightModeBtn.addEventListener('click', () => applyTheme('light'));
-  darkModeBtn.addEventListener('click', () => applyTheme('dark'));
+  lightModeBtn.addEventListener('click', () => {
+
+    currentThemeSource = 'light';
+    localStorage.setItem('themeSource', 'light');
+
+    applyTheme('light'); 
+  });
+
+  darkModeBtn.addEventListener('click', () => {
+
+    currentThemeSource = 'dark';
+    localStorage.setItem('themeSource', 'dark');
+
+    applyTheme('dark');
+  });
 }
 
 function resetAll() {
-  body.classList.remove('dark');
-  applyTheme('light'); 
-
+  currentThemeSource = 'system';
+  localStorage.removeItem('themeSource');
   resetBtn.click();
   resetPanelBtn.click();
   if (resetIconBtn) resetIconBtn.click();
 
-  lightModeBtn.classList.add('active');
-  darkModeBtn.classList.remove('active');
+  handleSystemThemeChange(); 
 }
 
 if (resetAllBtn) {
@@ -154,8 +194,7 @@ if (resetAllBtn) {
 
 function updateBox() {
   box.textContent = boxText.value;
-
-  box.style.setProperty('--color-box-bg-base', hexToRgb(bgColor.value)); 
+  box.style.setProperty('--color-box-bg-base', hexToRgb(bgColor.value));
   box.style.backgroundColor = `rgba(${hexToRgb(bgColor.value)}, ${transparency.value / 100})`;
 
   box.style.color = textColor.value;
@@ -172,23 +211,20 @@ function updateBox() {
 });
 
 resetBtn.addEventListener("click", () => {
-
-  boxText.value = "Customisable Button"; 
+  boxText.value = "Customisable Button";
   bgColor.value = "#ffffff";
   textColor.value = "#ffffff";
   boxWidth.value = 200;
   borderRadius.value = 8;
-  blur.value = 3; 
-  transparency.value = 5; 
+  blur.value = 3;
+  transparency.value = 5;
   updateBox();
   syncSliders();
 });
 
 function updatePanel() {
-
   controls.style.setProperty('--color-panel-bg-base', hexToRgb(panelBg.value));
   controls.style.backgroundColor = `rgba(${hexToRgb(panelBg.value)}, ${panelTransparency.value / 100})`;
-
   controls.style.color = panelText.value;
   controls.style.width = panelWidth.value + "px";
   controls.style.borderRadius = panelRadius.value + "px";
@@ -203,13 +239,12 @@ function updatePanel() {
 });
 
 resetPanelBtn.addEventListener("click", () => {
-
   panelBg.value = "#ffffff";
   panelText.value = "#000000";
   panelWidth.value = 300;
   panelRadius.value = 12;
   panelBlur.value = 30;
-  panelTransparency.value = 70; 
+  panelTransparency.value = 70;
   updatePanel();
   syncSliders();
 });
@@ -218,14 +253,13 @@ const iconSvg = controlsIcon ? controlsIcon.querySelector("svg") : null;
 
 function updateIcon() {
   if (iconSvg && iconColor) iconSvg.style.color = iconColor.value;
-
   if (controlsIcon && iconBg) {
     controlsIcon.style.setProperty('--color-icon-bg-base', hexToRgb(iconBg.value));
     controlsIcon.style.backgroundColor = `rgba(${hexToRgb(iconBg.value)}, ${iconTransparency.value / 100})`;
   }
 
   if (controlsIcon && iconBlur) controlsIcon.style.backdropFilter = `blur(${iconBlur.value}px)`;
-  if (controlsIcon && iconRadius) controlsIcon.style.borderRadius = iconRadius.value + "px"; 
+  if (controlsIcon && iconRadius) controlsIcon.style.borderRadius = iconRadius.value + "px";
 }
 
 if (iconColor && iconBg && iconTransparency && iconBlur && iconRadius) {
@@ -239,34 +273,28 @@ if (iconColor && iconBg && iconTransparency && iconBlur && iconRadius) {
 
 if (resetIconBtn) {
   resetIconBtn.addEventListener("click", () => {
-
     if (iconColor) iconColor.value = "#ffffff";
-    if (iconBg) iconBg.value = "#ffffff"; 
-    if (iconTransparency) iconTransparency.value = 5; 
-    if (iconBlur) iconBlur.value = 3; 
-    if (iconRadius) iconRadius.value = 50; 
+    if (iconBg) iconBg.value = "#ffffff";
+    if (iconTransparency) iconTransparency.value = 5;
+    if (iconBlur) iconBlur.value = 3;
+    if (iconRadius) iconRadius.value = 50;
     updateIcon();
     syncSliders();
   });
 }
 
 if (controlsIcon && controls) {
-
   function setTransformOriginToIcon() {
     const iconRect = controlsIcon.getBoundingClientRect();
     const panelRect = controls.getBoundingClientRect();
-
     const originX = ((iconRect.left + iconRect.width / 2) - panelRect.left) / panelRect.width * 100;
     const originY = ((iconRect.top + iconRect.height / 2) - panelRect.top) / panelRect.height * 100;
-
     controls.style.transformOrigin = `${originX}% ${originY}%`;
   }
 
   function openPanel() {
     setTransformOriginToIcon();
-
-    controls.style.display = "block"; 
-
+    controls.style.display = "block";
     requestAnimationFrame(() => {
       controls.classList.add("open");
       controls.style.opacity = "1";
@@ -281,7 +309,6 @@ if (controlsIcon && controls) {
 
   function closePanel() {
     setTransformOriginToIcon();
-
     controls.classList.remove("open");
     controls.style.opacity = "0";
     controls.style.transform = "scale(0.4)";
@@ -309,14 +336,13 @@ function makeDraggable(el) {
 
   function start(e) {
     const target = e.target;
-
     if (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "BUTTON" || target.closest('.controls-content-wrapper')) return;
 
     if (isControlsPanel) {
       const header = el.querySelector('.controls-header');
       if (!header || !header.contains(target)) {
         isPanelDrag = false;
-        return; 
+        return;
       }
       isPanelDrag = true;
     }
@@ -336,9 +362,7 @@ function makeDraggable(el) {
 
   function move(e) {
     if (!isDragging) return;
-
-    if (isControlsPanel && !isPanelDrag) return; 
-
+    if (isControlsPanel && !isPanelDrag) return;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     el.style.left = clientX - offsetX + "px";
@@ -349,7 +373,7 @@ function makeDraggable(el) {
 
   function end() {
     isDragging = false;
-    isPanelDrag = false; 
+    isPanelDrag = false;
     document.removeEventListener("mousemove", move);
     document.removeEventListener("mouseup", end);
     document.removeEventListener("touchmove", move);
@@ -359,10 +383,10 @@ function makeDraggable(el) {
 
 makeDraggable(box);
 makeDraggable(controlsIcon);
-makeDraggable(controls); 
+makeDraggable(controls);
 
 function switchTab(showEl, ...hideEls) {
-  showOnly(showEl, ...hideEls);
+  showOnly(showEl);
 }
 
 setActiveTab(tabGeneralBtn);
@@ -395,4 +419,5 @@ if (tabIconBtn && iconSettings) {
 resetBtn.click();
 resetPanelBtn.click();
 if (resetIconBtn) resetIconBtn.click();
-applyTheme(body.classList.contains('dark') ? 'dark' : 'light');
+
+initTheme();
