@@ -98,15 +98,12 @@ function applyTheme(theme) {
     body.classList.add('dark');
     lightModeBtn.classList.remove('active');
     darkModeBtn.classList.add('active');
-
     panelBg.value = '#222222';
     panelText.value = '#ffffff';
-
     bgColor.value = '#111111';
     textColor.value = '#eeeeee';
     iconBg.value = '#111111';
     iconColor.value = '#ffffff';
-
     blur.value = 12;
     iconBlur.value = 12;
     transparency.value = 50;
@@ -116,15 +113,12 @@ function applyTheme(theme) {
     body.classList.remove('dark');
     lightModeBtn.classList.add('active');
     darkModeBtn.classList.remove('active');
-
     panelBg.value = '#ffffff';
     panelText.value = '#000000';
-
     bgColor.value = '#ffffff';
     textColor.value = '#ffffff';
     iconBg.value = '#ffffff';
     iconColor.value = '#ffffff';
-
     blur.value = 3;
     iconBlur.value = 3;
     transparency.value = 5;
@@ -179,7 +173,7 @@ function updateBox() {
 
 resetBtn.addEventListener("click", () => {
 
-  boxText.value = "Cool Button"; 
+  boxText.value = "Customisable Button"; 
   bgColor.value = "#ffffff";
   textColor.value = "#ffffff";
   boxWidth.value = 200;
@@ -214,7 +208,7 @@ resetPanelBtn.addEventListener("click", () => {
   panelText.value = "#000000";
   panelWidth.value = 300;
   panelRadius.value = 12;
-  panelBlur.value = 100;
+  panelBlur.value = 30;
   panelTransparency.value = 70; 
   updatePanel();
   syncSliders();
