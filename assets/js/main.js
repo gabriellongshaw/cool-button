@@ -3,6 +3,7 @@ const controls = document.getElementById("controlsBox");
 const closeControls = document.getElementById("closeControls");
 const controlsIcon = document.getElementById("controlsIcon");
 const body = document.body;
+const root = document.documentElement; 
 const boxText = document.getElementById("boxText");
 const bgColor = document.getElementById("bgColor");
 const textColor = document.getElementById("textColor");
@@ -70,10 +71,10 @@ function showOnly(elToShow) {
   allTabs.filter(el => el !== elToShow).forEach(el => {
     if (!el) return;
     if (el.style.display !== "none") {
-      el.style.transition = "max-height 0.3s ease, opacity 0.3s ease";
+      el.style.transition = "max-height 0.2s ease, opacity 0.2s ease";
       el.style.maxHeight = "0";
       el.style.opacity = "0";
-      setTimeout(() => { el.style.display = "none"; }, 300);
+      setTimeout(() => { el.style.display = "none"; }, 200);
     }
   });
 
@@ -91,10 +92,18 @@ function showOnly(elToShow) {
 
 function applyTheme(theme) {
   const isDark = theme === 'dark';
+
   if (isDark) {
     body.classList.add('dark'); 
     lightModeBtn.classList.remove('active');
     darkModeBtn.classList.add('active');
+  } else {
+    body.classList.remove('dark'); 
+    lightModeBtn.classList.add('active');
+    darkModeBtn.classList.remove('active');
+  }
+
+  if (isDark) {
     panelBg.value = '#222222';
     panelText.value = '#ffffff';
     bgColor.value = '#111111';
@@ -105,11 +114,23 @@ function applyTheme(theme) {
     iconBlur.value = 12;
     transparency.value = 50;
     iconTransparency.value = 50;
+    panelBlur.value = 12; 
+    panelTransparency.value = 90; 
+
+    root.style.setProperty('--color-panel-tab-inactive', '#444');
+    root.style.setProperty('--color-panel-tab-text', '#ffffff');
+    root.style.setProperty('--color-panel-input-bg', 'rgba(255, 255, 255, 0.1)');
+    root.style.setProperty('--color-panel-input-border', 'transparent');
+    root.style.setProperty('--color-panel-slider-fill', '#ffffff');
+    root.style.setProperty('--color-panel-slider-track', '#888');
+    root.style.setProperty('--color-panel-slider-thumb', '#ffffff');
+    root.style.setProperty('--color-panel-reset-bg', 'rgba(255, 255, 255, 0.1)');
+    root.style.setProperty('--color-panel-reset-hover-bg', 'rgba(255, 255, 255, 0.2)');
+    root.style.setProperty('--color-box-shadow-inset', 'rgba(0, 0, 0, 0.4)');
+    root.style.setProperty('--color-icon-shadow-inset', 'rgba(0, 0, 0, 0.4)');
+
   } else {
 
-    body.classList.remove('dark'); 
-    lightModeBtn.classList.add('active');
-    darkModeBtn.classList.remove('active');
     panelBg.value = '#ffffff';
     panelText.value = '#000000';
     bgColor.value = '#ffffff';
@@ -120,6 +141,20 @@ function applyTheme(theme) {
     iconBlur.value = 3;
     transparency.value = 5;
     iconTransparency.value = 5;
+    panelBlur.value = 30; 
+    panelTransparency.value = 70; 
+
+    root.style.setProperty('--color-panel-tab-inactive', '#e0e0e0');
+    root.style.setProperty('--color-panel-tab-text', '#000000');
+    root.style.setProperty('--color-panel-input-bg', 'rgba(0, 0, 0, 0.05)');
+    root.style.setProperty('--color-panel-input-border', 'rgba(0, 0, 0, 0.1)');
+    root.style.setProperty('--color-panel-slider-fill', '#1e88e5');
+    root.style.setProperty('--color-panel-slider-track', '#ccc');
+    root.style.setProperty('--color-panel-slider-thumb', '#1e88e5');
+    root.style.setProperty('--color-panel-reset-bg', 'rgba(0, 0, 0, 0.1)');
+    root.style.setProperty('--color-panel-reset-hover-bg', 'rgba(0, 0, 0, 0.2)');
+    root.style.setProperty('--color-box-shadow-inset', 'rgba(255, 255, 255, 0.3)');
+    root.style.setProperty('--color-icon-shadow-inset', 'rgba(255, 255, 255, 0.3)');
   }
 
   updateBox();
@@ -181,6 +216,7 @@ if (lightModeBtn && darkModeBtn) {
 function resetAll() {
   currentThemeSource = 'system';
   localStorage.removeItem('themeSource');
+
   resetBtn.click();
   resetPanelBtn.click();
   if (resetIconBtn) resetIconBtn.click();
@@ -194,6 +230,7 @@ if (resetAllBtn) {
 
 function updateBox() {
   box.textContent = boxText.value;
+
   box.style.setProperty('--color-box-bg-base', hexToRgb(bgColor.value));
   box.style.backgroundColor = `rgba(${hexToRgb(bgColor.value)}, ${transparency.value / 100})`;
 
@@ -211,18 +248,30 @@ function updateBox() {
 });
 
 resetBtn.addEventListener("click", () => {
-  boxText.value = "Customisable Button";
-  bgColor.value = "#ffffff";
-  textColor.value = "#ffffff";
+
+  if (currentThemeSource === 'light' || currentThemeSource === 'system') {
+    boxText.value = "Customisable Button";
+    bgColor.value = "#ffffff";
+    textColor.value = "#ffffff";
+    blur.value = 3;
+    transparency.value = 5;
+  } else { 
+    boxText.value = "Customisable Button";
+    bgColor.value = "#111111";
+    textColor.value = "#eeeeee";
+    blur.value = 12;
+    transparency.value = 50;
+  }
+
   boxWidth.value = 200;
   borderRadius.value = 8;
-  blur.value = 3;
-  transparency.value = 5;
+
   updateBox();
   syncSliders();
 });
 
 function updatePanel() {
+
   controls.style.setProperty('--color-panel-bg-base', hexToRgb(panelBg.value));
   controls.style.backgroundColor = `rgba(${hexToRgb(panelBg.value)}, ${panelTransparency.value / 100})`;
   controls.style.color = panelText.value;
@@ -239,12 +288,22 @@ function updatePanel() {
 });
 
 resetPanelBtn.addEventListener("click", () => {
-  panelBg.value = "#ffffff";
-  panelText.value = "#000000";
+
+  if (currentThemeSource === 'light' || currentThemeSource === 'system') {
+    panelBg.value = "#ffffff";
+    panelText.value = "#000000";
+    panelBlur.value = 30;
+    panelTransparency.value = 70;
+  } else { 
+    panelBg.value = "#222222";
+    panelText.value = "#ffffff";
+    panelBlur.value = 12;
+    panelTransparency.value = 90;
+  }
+
   panelWidth.value = 300;
   panelRadius.value = 12;
-  panelBlur.value = 30;
-  panelTransparency.value = 70;
+
   updatePanel();
   syncSliders();
 });
@@ -254,6 +313,7 @@ const iconSvg = controlsIcon ? controlsIcon.querySelector("svg") : null;
 function updateIcon() {
   if (iconSvg && iconColor) iconSvg.style.color = iconColor.value;
   if (controlsIcon && iconBg) {
+
     controlsIcon.style.setProperty('--color-icon-bg-base', hexToRgb(iconBg.value));
     controlsIcon.style.backgroundColor = `rgba(${hexToRgb(iconBg.value)}, ${iconTransparency.value / 100})`;
   }
@@ -273,11 +333,21 @@ if (iconColor && iconBg && iconTransparency && iconBlur && iconRadius) {
 
 if (resetIconBtn) {
   resetIconBtn.addEventListener("click", () => {
-    if (iconColor) iconColor.value = "#ffffff";
-    if (iconBg) iconBg.value = "#ffffff";
-    if (iconTransparency) iconTransparency.value = 5;
-    if (iconBlur) iconBlur.value = 3;
+
+    if (currentThemeSource === 'light' || currentThemeSource === 'system') {
+      if (iconColor) iconColor.value = "#ffffff";
+      if (iconBg) iconBg.value = "#ffffff";
+      if (iconTransparency) iconTransparency.value = 5;
+      if (iconBlur) iconBlur.value = 3;
+    } else { 
+      if (iconColor) iconColor.value = "#ffffff";
+      if (iconBg) iconBg.value = "#111111";
+      if (iconTransparency) iconTransparency.value = 50;
+      if (iconBlur) iconBlur.value = 12;
+    }
+
     if (iconRadius) iconRadius.value = 50;
+
     updateIcon();
     syncSliders();
   });
@@ -301,7 +371,7 @@ if (controlsIcon && controls) {
       controls.style.transform = "scale(1)";
     });
 
-    controlsIcon.style.transition = "transform 0.35s cubic-bezier(0.25,1,0.5,1), opacity 0.25s ease";
+    controlsIcon.style.transition = "transform 0.3s cubic-bezier(0.25,1,0.5,1), opacity 0.3s ease";
     controlsIcon.style.transform = "scale(0.7) rotate(45deg)";
     controlsIcon.style.opacity = "0";
     controlsIcon.style.pointerEvents = "none";
@@ -327,19 +397,23 @@ if (controlsIcon && controls) {
 }
 
 function makeDraggable(el) {
-  let isDragging = false, offsetX, offsetY;
+  let isDragging = false,
+    offsetX, offsetY;
   let isPanelDrag = false;
   const isControlsPanel = el.id === 'controlsBox';
+  let hasMoved = false; 
 
   el.addEventListener("mousedown", start);
-  el.addEventListener("touchstart", start, { passive: false });
+  el.addEventListener("touchstart", start, { passive: true }); 
 
   function start(e) {
     const target = e.target;
+
     if (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "BUTTON" || target.closest('.controls-content-wrapper')) return;
 
     if (isControlsPanel) {
       const header = el.querySelector('.controls-header');
+
       if (!header || !header.contains(target)) {
         isPanelDrag = false;
         return;
@@ -348,6 +422,7 @@ function makeDraggable(el) {
     }
 
     isDragging = true;
+    hasMoved = false; 
     const rect = el.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -356,22 +431,35 @@ function makeDraggable(el) {
 
     document.addEventListener("mousemove", move);
     document.addEventListener("mouseup", end);
-    document.addEventListener("touchmove", move, { passive: false });
+    document.addEventListener("touchmove", move, { passive: false }); 
     document.addEventListener("touchend", end);
+
   }
 
   function move(e) {
     if (!isDragging) return;
     if (isControlsPanel && !isPanelDrag) return;
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
     el.style.left = clientX - offsetX + "px";
     el.style.top = clientY - offsetY + "px";
     el.style.transform = "none";
-    e.preventDefault();
+
+    hasMoved = true; 
+    e.preventDefault(); 
   }
 
-  function end() {
+  function end(e) {
+
+    if (hasMoved) {
+
+      if (e.type === 'touchend' && e.target === el) {
+        e.preventDefault();
+      }
+    }
+
     isDragging = false;
     isPanelDrag = false;
     document.removeEventListener("mousemove", move);
